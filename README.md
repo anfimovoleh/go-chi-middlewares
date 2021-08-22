@@ -13,6 +13,7 @@ The code above fetches the go-chi-middlewares as your project dependency.
 ## Current list of middlewares
 * Logger(zap);
 * Basic Auth;
+* Context(set objects to http request context);
 * Verify remote address is private.
 
 We are planning to add next middlewares in the near future: 
