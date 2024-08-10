@@ -1,43 +1,42 @@
 package chiwares
 
 import (
+	"github.com/rs/zerolog"
 	"math/rand"
 	"net/http"
 	"time"
 
-	"go.uber.org/zap"
-
 	"github.com/go-chi/chi/middleware"
 )
 
-func Logger(logger *zap.Logger, durationThreshold time.Duration) func(http.Handler) http.Handler {
+// TODO: add HTTP tests
+
+// Logger is a middleware that logs request and response
+func Logger(logger zerolog.Logger, durationThreshold time.Duration) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			startTS := time.Now()
 			ww := middleware.NewWrapResponseWriter(w, r.ProtoMajor)
-			t1 := time.Now()
 
-			requestID := rand.Int()
+			logger = logger.With().
+				Int("request_id", rand.Int()).
+				Str("method", r.Method).
+				Str("path", r.URL.Path).Logger()
 
-			logger = logger.With(
-				zap.Int("request_id", requestID),
-				zap.String("method", r.Method),
-				zap.String("path", r.URL.Path),
-			)
 			defer func() {
-				duration := time.Since(t1)
-				lEntry := logger.With(
-					zap.String("path", r.URL.Path),
-					zap.String("duration", duration.String()),
-					zap.Int("status", ww.Status()),
-				)
-				lEntry.Debug("request finished")
+				duration := time.Since(startTS)
+				lEntry := logger.With().
+					Dur("duration", duration).
+					Int("status", ww.Status()).Logger()
+
+				lEntry.Debug().Msg("request finished")
 
 				if duration > durationThreshold {
-					lEntry.With(zap.Any("http_request", r)).Warn("slow request")
+					lEntry.Warn().Any("http_request", r).Msg("slow request")
 				}
 			}()
 
-			logger.Debug("request started")
+			logger.Debug().Msg("request started")
 			next.ServeHTTP(ww, r)
 		})
 	}
