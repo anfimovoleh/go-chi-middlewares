@@ -33,7 +33,7 @@ func Logger(logger zerolog.Logger, durationThreshold time.Duration) func(http.Ha
 			defer func() {
 				duration := time.Since(startTS)
 				lEntry := logger.With().
-					Dur("duration", duration).
+					Str("duration", duration.String()).
 					Int("status", ww.Status()).Logger()
 
 				lEntry.Debug().Msg("request finished")
