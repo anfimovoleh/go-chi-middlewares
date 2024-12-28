@@ -30,16 +30,16 @@ type PrometheusMiddleware struct {
 }
 
 // NewPrometheusMiddleware returns a new instance of Prometheus middleware.
-// excludeRoutes is a list of routes that should be excluded from metrics. By default, /metrics is excluded.
+// excludeRoutes is a list of routes that should be excluded from metrics. By default, /metrics and /favicon.ico are excluded.
 func NewPrometheusMiddleware(excludeRoutes ...string) *PrometheusMiddleware {
-	// Convert excludeRoutes to a map for efficient lookups
 	excludeMap := make(map[string]struct{}, len(excludeRoutes))
 	for _, route := range excludeRoutes {
 		excludeMap[route] = struct{}{}
 	}
 
-	// Exclude /metrics by default
+	// Exclude /metrics and /favicon.ico by default
 	excludeMap["/metrics"] = struct{}{}
+	excludeMap["/favicon.ico"] = struct{}{}
 
 	// Define Prometheus metrics
 	httpRequestDuration := prometheus.NewHistogramVec(
