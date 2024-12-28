@@ -31,7 +31,7 @@ type PrometheusMiddleware struct {
 
 // NewPrometheusMiddleware returns a new instance of Prometheus middleware.
 // excludeRoutes is a list of routes that should be excluded from metrics. By default, /metrics is excluded.
-func NewPrometheusMiddleware(excludeRoutes []string) *PrometheusMiddleware {
+func NewPrometheusMiddleware(excludeRoutes ...string) *PrometheusMiddleware {
 	// Convert excludeRoutes to a map for efficient lookups
 	excludeMap := make(map[string]struct{}, len(excludeRoutes))
 	for _, route := range excludeRoutes {
