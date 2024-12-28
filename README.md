@@ -11,7 +11,7 @@ go get github.com/anfimovoleh/go-chi-middlewares
 The code above fetches the go-chi-middlewares as your project dependency. 
 
 ## Current list of middlewares
-* Logger(zap);
+* Logger(zerolog);
 * Basic Auth;
 * Context(set objects to http request context);
 * Verify remote address is private.
@@ -20,3 +20,4 @@ We are planning to add next middlewares in the near future:
 * JWT Auth;
 * OAuth2
 * Rate limiter;
+* Prometheus metrics.
