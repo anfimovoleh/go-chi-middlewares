@@ -25,14 +25,14 @@ func Logger(logger zerolog.Logger, durationThreshold time.Duration) func(http.Ha
 				requestID = fmt.Sprintf("%d", rand.Int())
 			}
 
-			logger = logger.With().
+			l := logger.With().
 				Str("request_id", requestID).
 				Str("method", r.Method).
 				Str("path", r.URL.Path).Logger()
 
 			defer func() {
 				duration := time.Since(startTS)
-				lEntry := logger.With().
+				lEntry := l.With().
 					Str("duration", duration.String()).
 					Int("status", ww.Status()).Logger()
 
@@ -43,7 +43,7 @@ func Logger(logger zerolog.Logger, durationThreshold time.Duration) func(http.Ha
 				}
 			}()
 
-			logger.Debug().Msg("request started")
+			l.Debug().Msg("request started")
 			next.ServeHTTP(ww, r)
 		})
 	}
