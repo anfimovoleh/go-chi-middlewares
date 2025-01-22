@@ -28,7 +28,8 @@ func Logger(logger zerolog.Logger, durationThreshold time.Duration) func(http.Ha
 			l := logger.With().
 				Str("request_id", requestID).
 				Str("method", r.Method).
-				Str("path", r.URL.Path).Logger()
+				Str("path", r.URL.Path).
+				Str("remote_addr", r.RemoteAddr).Logger()
 
 			defer func() {
 				duration := time.Since(startTS)
